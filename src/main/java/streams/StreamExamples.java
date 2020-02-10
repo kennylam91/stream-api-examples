@@ -5,7 +5,12 @@ import java.time.Month;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
+import static java.util.stream.Collectors.*;
+import static java.util.function.Function.*;
+import java.util.function.*;
 
 public class StreamExamples {
 
@@ -31,25 +36,30 @@ public class StreamExamples {
 
     List<Task> tasks = Arrays.asList(task1, task2, task3, task4, task5, task6);
     printList(tasks);
-    List<String> readingTasks = findAllReadingTaskTitlesSortedByCreationDate(tasks);
-    printList(readingTasks);
+    /*
+     * List<String> readingTasks = findAllReadingTaskTitlesSortedByCreationDate(tasks);
+     * printList(readingTasks);
+     * 
+     * List<Task> distinctTasks = findAllDistinctTasks(tasks);
+     * 
+     * printList(distinctTasks);
+     * 
+     * List<String> top2ReadingTasks = findTop2ReadingTasksSortedByCreationDate(tasks);
+     * printList(top2ReadingTasks);
+     * 
+     * System.out.println(countAllReadingTasks(tasks));
+     * 
+     * List<String> uniqueTags = findAllUniqueTags(tasks); printList(uniqueTags);
+     * 
+     * System.out.println("All Tasks have 'books' tag ? : " + isAllReadingTasksHaveTagBooks(tasks));
+     * 
+     * String allTaskTitles = joinAllTaskTitles(tasks); System.out.println(allTaskTitles);
+     */
+    Set<String> uniqueTaskTitles = getUniqueTitles(tasks);
+    System.out.println(uniqueTaskTitles);
     
-    List<Task> distinctTasks = findAllDistinctTasks(tasks);
-    
-    printList(distinctTasks);
-    
-    List<String> top2ReadingTasks = findTop2ReadingTasksSortedByCreationDate(tasks);
-    printList(top2ReadingTasks);
-    
-    System.out.println(countAllReadingTasks(tasks));
-    
-    List<String> uniqueTags = findAllUniqueTags(tasks);
-    printList(uniqueTags);
-    
-    System.out.println("All Tasks have 'books' tag ? : " + isAllReadingTasksHaveTagBooks(tasks));
-
-    String allTaskTitles = joinAllTaskTitles(tasks);
-    System.out.println(allTaskTitles);
+    Map<String,Task> taskMap = taskMap(tasks);
+    System.out.println(taskMap);
 
   }
   
@@ -108,6 +118,19 @@ public class StreamExamples {
         .map(Task::getTitle)
         .reduce((first,second) -> (first + "\n"+ second))
         .get();
+  }
+  
+  // Collect all unique task titles
+  private static Set<String> getUniqueTitles(List<Task> tasks){
+    return tasks.stream()
+        .map(Task::getTitle)
+        .collect(Collectors.toSet());
+  }
+  
+  // Collect data into a Map
+  private static Map<String, Task> taskMap(List<Task> tasks){
+    return tasks.stream()
+        .collect(toMap(Task::getTitle, identity(), (t1,t2) -> t2));
   }
   
   //Print an task list
